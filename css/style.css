@@ -39,100 +39,6 @@ html,body {
     overflow: hidden;
 }
 
-#legend1 {
-    position: absolute;
-    left: 1250px;
-    top: 50px;
-    width:  15px;
-    height: 15px;
-    background-color: rgb(247, 68, 97);
-}
-
-#legend2 {
-    position: absolute;
-    left: 1250px;
-    top: 80px;
-    width:  15px;
-    height: 15px;
-    background-color: rgb(173,195,192);
-}
-
-#legend3 {
-    position: absolute;
-    left: 1250px;
-    top: 110px;
-    width:  15px;
-    height: 15px;
-    background-color: rgb(87,96,105);
-}
-
-#text1 {
-    position: absolute;
-    left: 1270px;
-    top: 48px;
-    width:  150px;
-    height: 15px;
-}
-
-#text2 {
-    position: absolute;
-    left: 1270px;
-    top: 78px;
-    width:  150px;
-    height: 15px;
-}
-
-#text3 {
-    position: absolute;
-    left: 1270px;
-    top: 108px;
-    width:  150px;
-    height: 15px;
-}
-
-#repr {
-    position: absolute;
-    left: 1250px;
-    top: 200px;
-}
-
-#attr {
-    position: absolute;
-    left: 1250px;
-    top: 250px;
-}
-
-#iter {
-    position: absolute;
-    left: 1250px;
-    top: 300px;
-}
-
-#bartext1{
-    position: absolute;
-    left: 1250px;
-    top: 180px;
-}
-
-#bartext2{
-    position: absolute;
-    left: 1250px;
-    top: 230px;
-}
-
-#bartext3{
-    position: absolute;
-    left: 1250px;
-    top: 280px;
-}
-
-#readme{
-    position: absolute;
-    font-size: 15px;
-    left: 1250px;
-    top: 350px;
-}
-
 .title {
     font-size: 1.3rem;
     text-anchor: middle;
@@ -149,40 +55,40 @@ html,body {
 #Insnms{
     position: absolute;
     font-size: 0.6rem;
-    right: 10px;
-    top: 120px;
+    right: 170px;
+    top: 100px;
     width:  15rem;
 }
 
 #Insnms2{
     position: absolute;
     font-size: 0.6rem;
-    right: 10px;
-    top: 150px;
+    right: 170px;
+    top: 120px;
     width:  15rem;
 }
 
 #y_ax{
     position: absolute;
     font-size: 0.6rem;
-    right: 10px;
-    top: 240px;
+    right: 170px;
+    top: 170px;
     width:  15rem;
 }
 
 #Select1{
     position: absolute;
     font-size: 1rem;
-    right: 10px;
-    top: 80px;
+    right: 150px;
+    top: 70px;
     width:  15rem;
 }
 
 #Select2{
     position: absolute;
     font-size: 1rem;
-    right: 10px;
-    top: 200px;
+    right: 150px;
+    top: 140px;
     width:  15rem;
 }
 
@@ -190,15 +96,15 @@ html,body {
 #Red{
     position: absolute;
     font-size: 0.6rem;
-    right: 16rem;
-    top: 123px;
+    right: 400px;
+    top: 100px;
 }
 
 #Cyan{
     position: absolute;
     font-size: 0.6rem;
-    right: 16rem;
-    top: 153px;
+    right: 400px;
+    top: 120px;
 }
 
 #tooltip{
