@@ -159,8 +159,9 @@ let text;
 let clicking = false;
 let choosing = false;
 let ins,ins2;
+let svg,svg2,svg3;
 function draw_graph() {
-    let svg = d3.select('#container')
+    svg = d3.select('#container')
         .select('svg')
         .attr('width', width)
         .attr('height', height);
@@ -268,8 +269,8 @@ function draw_graph() {
             // tooltip
             let tooltip = d3.select('#tooltip');
             tooltip.html(content)
-                .style('left', (x(parseInt(d[x_attr])) + 5) + 'px')
-                .style('top', (y(parseInt(d[y_attr])) + 5)+ 'px')
+                .style('left', (x(parseInt(d[x_attr])) - 200) + 'px')
+                .style('top', (y(parseInt(d[y_attr])) - 200)+ 'px')
                 //.transition().duration(500)
                 .style('visibility', 'visible');
         })
@@ -490,6 +491,18 @@ function draw_graph() {
             .attr("x", d=>d.x)
             .attr("y", d=>d.y);
     });
+    svg2 = d3.select("#my_dataviz")
+              .append("svg")
+                .attr("width", 210)
+                .attr("height", 210)
+              .append("g")
+                .attr("transform", "translate(" + 105 + "," + 105 + ")");
+    svg3 = d3.select("#my_dataviz2")
+                .append("svg")
+                  .attr("width", 210)
+                  .attr("height", 210)
+                .append("g")
+                  .attr("transform", "translate(" + 105 + "," + 105 + ")");
     show_ins();
 }
 function redraw(){
@@ -560,7 +573,7 @@ let Insnames = [
     'University of Toronto',
     'Tsinghua University',
     'Peking University',
-    'Hong Kong University of Science and Technology',
+    'The Hong Kong University of Science and Technology',
     'Chinese University of Hong Kong',
     'Shanghai Jiao Tong University',
     'Zhejiang University',
@@ -568,16 +581,29 @@ let Insnames = [
     'Fudan University'
 ];
 
+let inte2id={
+    'Machine learning & data mining': 0,
+    'Artificial intelligence': 1,
+    'Computer vision': 2,
+    'Algorithms & complexity': 3,
+    'Human-computer interaction': 4,
+    'Computer architecture': 5,
+    'Natural language processing': 6,
+}
+
 var colscatter1 = d3.rgb(254,67,101);
 var colscatter2 = d3.rgb(131,175,155);
 var colscatter3 = d3.rgb(200,200,169);
 var colscatter4 = d3.rgb(249,205,173);
-
+var intes_map;
+let fff=0,fff2=0;
 function show_ins(){
     ins = document.getElementById("Insnms").value;
 
     ins2 = document.getElementById("Insnms2").value;
     if(ins == 'All'){
+        if(fff) svg2.selectAll('*').remove();
+        if(fff2) svg3.selectAll('*').remove();
         clicking = false;
         choosing = false;
         d3.selectAll('.scatterpoint').style("visibility", "visible").style('fill',colscatter1);
@@ -593,6 +619,7 @@ function show_ins(){
                     return 'none';
                 }
             })
+        
 
     }
     else{
@@ -633,6 +660,117 @@ function show_ins(){
                 else return "hidden";
             }
         })
+
+            // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+            //var radius = Math.min(width, height) / 2 - margin
+
+// The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+            //svg2.selectAll('mySlices').remove();
+
+            // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+            
+            // append the svg object to the div called 'my_dataviz'
+
+            
+            // append the svg object to the div called 'my_dataviz'
+            
+            // Create dummy data
+            if(fff) svg2.selectAll('*').remove();
+            fff=1;
+            
+            var radius = 100
+            var data = intes_map[ins];
+            console.log(data);
+            
+            // set the color scale
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+            
+            // Compute the position of each group on the pie:
+            var pie = d3.pie()
+              .value(function(d) {return d[1];})
+            var data_ready = pie(Object.entries(data))
+
+            // Now I know that group A goes from 0 degrees to x degrees and so on.
+            
+            // shape helper to build arcs:
+            var arcGenerator = d3.arc()
+              .innerRadius(0)
+              .outerRadius(radius)
+
+            
+            // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+            svg2
+              .selectAll('mySlices')
+              .data(data_ready)
+              .enter()
+              .append('path')
+                .attr('d', arcGenerator)
+                .attr('fill', function(d){return(color(inte2id[d.data[0]])) })
+                .attr("stroke", "black")
+                .style("stroke-width", "2px")
+                .style("opacity", 0.7)
+            
+            // Now add the annotation. Use the centroid method to get the best coordinates
+            svg2
+              .selectAll('mySlices')
+              .data(data_ready)
+              .enter()
+              .append('text')
+              .text(function(d){ return d.data[0]})
+              .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+              .style("text-anchor", "middle")
+              .style("font-size", 10)
+
+            
+            
+
+            
+            if(fff2) svg3.selectAll('*').remove();
+            if(ins2== 'None')return;
+            fff2=1;
+            var radius = 100
+            var data = intes_map[ins2];
+            console.log(data);
+            
+            // set the color scale
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+            
+            // Compute the position of each group on the pie:
+            var pie = d3.pie()
+              .value(function(d) {return d[1];})
+            var data_ready = pie(Object.entries(data))
+
+            // Now I know that group A goes from 0 degrees to x degrees and so on.
+            
+            // shape helper to build arcs:
+            var arcGenerator = d3.arc()
+              .innerRadius(0)
+              .outerRadius(radius)
+
+            
+            // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+            svg3
+              .selectAll('mySlices')
+              .data(data_ready)
+              .enter()
+              .append('path')
+                .attr('d', arcGenerator)
+                .attr('fill', function(d){return(color(inte2id[d.data[0]])) })
+                .attr("stroke", "black")
+                .style("stroke-width", "2px")
+                .style("opacity", 0.7)
+            
+            // Now add the annotation. Use the centroid method to get the best coordinates
+            svg3
+              .selectAll('mySlices')
+              .data(data_ready)
+              .enter()
+              .append('text')
+              .text(function(d){ return d.data[0]})
+              .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+              .style("text-anchor", "middle")
+              .style("font-size", 10)
+              
     }
 }
 
@@ -674,6 +812,27 @@ function set_ui() {
     d3.select("body")
         .style("font-family", fontFamily);
 }
+function set_interst(){
+    let num = data1.length;
+    intes_map = {}
+    for(i in Insnames){
+        intes_map[Insnames[i]] = {};
+    }
+    fs_map = {};
+    for(i=0;i<num;i++){
+        if(!intes_map[data1[i]["Institution"]]) continue;
+        intes = data1[i]["Research Interest"].split(',');
+        for(j in intes){
+            if(!inte2id.hasOwnProperty(intes[j])) continue;
+            if(!intes_map[data1[i]['Institution']][intes[j]]) intes_map[data1[i]['Institution']][intes[j]]=0;
+            intes_map[data1[i]['Institution']][intes[j]]++;
+
+            if(!fs_map[intes[j]]) fs_map[intes[j]]=0;
+            fs_map[intes[j]]++;
+        }
+    }
+    console.log(fs_map);
+}
 
 function main() {
     set_selection();
@@ -686,6 +845,7 @@ function main() {
             // remove data without x_attr or y_attr
             data1 = data1.filter((d, i) => (d[x_attr] != '' && d[y_attr] != '' && d[rad_attr] != ''));
             set_ui();
+            set_interst();
             draw_graph();
         })
     })
