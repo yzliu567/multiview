@@ -8,139 +8,12 @@ let y_attr = 'Publications';
 let col_attr = 'Citations';
 let rad_attr = 'H-index';
 let backup1;
+var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 let data_file2 = './data/data.json';
 
-let raw_l1=2,raw_l2=1e-6,raw_iters=500;
-let lambda1=2,lambda2=1e-6,lambda3=0,iters=500;
-
-function get_distance(a,b){
-    return Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
-}
-
-function repulsive(nodes,i,j){
-    let dist = get_distance(nodes[i],nodes[j]);
-    let fs = -lambda1 * nodes[i].weight * nodes[j].weight/(dist);
-    //fs = clip(fs);
-    let dy = nodes[j].y - nodes[i].y, dx = nodes[j].x -nodes[i].x;
-    return {x: fs*dx/dist, y: fs*dy/dist}
-}
-
-function attractive(nodes,i,j,w){
-    let dist = get_distance(nodes[i],nodes[j]);
-    //let len = lambda3 * nodes[i].weight * nodes[j].weight;
-    //let fs = lambda2 * (dist*dist/len - len*len/dist);
-    let fs = lambda2 * w * dist * dist;
-    if(nodes[i].weight<=3 && nodes[j].weight>15) fs *= 10;
-    if(nodes[j].weight<=3 && nodes[i].weight>15) fs *= 10;
-    //fs = clip(fs);
-    let dy = nodes[j].y - nodes[i].y, dx = nodes[j].x -nodes[i].x;
-    return {x: fs*dx/dist, y: fs*dy/dist}
-}
-
-
-function normalize(nodes) {
-    n = nodes.length;
-    let max_x=nodes[0].x,max_y=nodes[0].y,min_x=nodes[0].x,min_y=nodes[0].y;
-    for(let i=1;i<n;++i) {
-        max_x=Math.max(max_x,nodes[i].x);
-        min_x=Math.min(min_x,nodes[i].x);
-        max_y=Math.max(max_y,nodes[i].y);
-        min_y=Math.min(min_y,nodes[i].y);
-    }
-    for(let i=0;i<n;++i) {
-        nodes[i].x = (nodes[i].x-min_x)/(max_x-min_x)*0.5*width+0.05*width;
-        nodes[i].y = (nodes[i].y-min_y)/(max_y-min_y)*0.5*height+0.4*height;
-    }
-}
-
-function modified_FR(nodes, links){
-    let n=nodes.length;
-    let m=links.length;
-    name2id={};
-    for(let i=0;i<n;i++){
-        name2id[nodes[i].id] = i;
-    }
-    for(let i=0;i<m;i++){
-        links[i].from = name2id[links[i].source]
-        links[i].to = name2id[links[i].target]
-    }
-    for(let i=0;i<n;i++){
-        nodes[i].x = Math.random() * 0.8 * width + 0.1 * width;
-        nodes[i].y = Math.random() * 0.8 * height + 0.1 * height;
-    }
-    for(let it=1;it<=iters;it++){
-        //console.log(it)
-        force=[]
-        //tmp=0;
-        for(let i=0;i<n;i++){
-            force[i]={x:0,y:0};
-            for(let j=0;j<n;j++){
-                if(i!=j){
-                    let fs = repulsive(nodes,i,j);
-                    force[i].x+=fs.x;
-                    force[i].y+=fs.y;
-                    //console.log(fs.x, fs.y)
-                    //tmp = Math.max(tmp, Math.max(Math.abs(fs.x),Math.abs(fs.y)))
-                }
-            }
-        }
-        //console.log('repulsive',tmp);
-        //tmp=0;
-        for(let e=0;e<m;e++){
-            let x = links[e].from;
-            let y = links[e].to;
-            if(x==y) continue;
-            let fs = attractive(nodes, x, y, links[e].weight);
-            force[x].x+=fs.x;
-            force[x].y+=fs.y;
-            force[y].x-=fs.x;
-            force[y].y-=fs.y;
-            //tmp = Math.max(tmp, Math.max(Math.abs(fs.x),Math.abs(fs.y)))
-        }
-        //console.log('attractive', tmp);
-        cg =0;
-        for(let i=0;i<n;i++){
-            cg = Math.max(cg, Math.max(force[i].x, force[i].y));
-            nodes[i].x += force[i].x;
-            nodes[i].y += force[i].y;
-        }
-        //console.log(it, cg);
-        //normalize(nodes);
-        //tmp*=0.9;
-    }
-    normalize(nodes);
-    for(i in nodes){
-        if(isNaN(nodes[i].x) || isNaN(nodes[i].y)){
-            console.log("Crash");
-            redraw();
-        }
-    }
-}
 let nodes_backup, links_backup, force_direct_flag=0;
-// 需要实现一个图布局算法，给出每个node的x,y属性
-function graph_layout_algorithm(nodes, links) {
-    // 算法开始时间
-    d = new Date()
-    begin = d.getTime()
 
-    //这是一个随机布局，请在这一部分实现图布局算法
-    /*
-    for (i in nodes) {
-        for (k = 0; k < 10000; k++) {
-            nodes[i].x = Math.random() * 0.8 * width + 0.1 * width;
-            nodes[i].y = Math.random() * 0.8 * height + 0.1 * height;
-        }
-    }
-    */
-    modified_FR(nodes,links);
-    nodes_backup = nodes;
-    links_backup = links;
-    // 算法结束时间
-    d2 = new Date()
-    end = d2.getTime()
-
-}
 let nodes_dict = {};
 let bgcolor = d3.color("rgba(240, 240, 240, 0.9)");
 
@@ -241,14 +114,10 @@ function draw_graph() {
 
         .style('fill', (d) =>{
             return colscatter1;
-            //return compute(lnr(d[col_attr]));
         })
 
         .on('mouseover', (e, d) => {
 
-            //console.log('e', e, 'd', d)
-
-            // show a tooltip
             let name = d['First Name'] + ' ' + d['Mid Name'] + ' ' + d['Last Name'];
             let institution = d['Institution'];
             let grad_year = d['Ph.D. Graduation Year'];
@@ -415,39 +284,6 @@ function draw_graph() {
                 });
             }
         })
-        /*
-        .on("click", function (e, d){
-            clicking = true;
-            d3.selectAll(".forcepoint").attr("fill", (d2) =>{
-                if(d==d2||haslinks[name2id[d.id]][name2id[d2.id]]) return d2.rawcolor;
-                else return d2.fcolor;
-            });
-            d3.selectAll(".linkline").style("visibility", (d2)=>{
-                //console.log(d2.source.id, d.id)
-                if(d2.source.id == d.id || d2.target.id == d.id) return "visible";
-                else return "hidden";
-            });
-            text
-                .attr("display", function(f){
-                    if((f.id==d.id||haslinks[name2id[d.id]][name2id[f.id]])&&f.weight>5) return "null";
-                    else return "none";
-                })
-        })
-        .on("dblclick", function(e,d){
-            clicking = false;
-            d3.selectAll(".forcepoint").style("visibility","visible").style("fill", d=>d.rawcolor);
-            d3.selectAll(".linkline").style("visibility", "visible");
-            text
-                .attr("display", function (f) {
-                    if (f.weight > 40) {
-                        return 'null';
-                    }
-                    else {
-                        return 'none';
-                    }
-                })
-        })
-        */
         .call(drag(simulation));
 
     // 学校名称text，只显示满足条件的学校
@@ -474,14 +310,6 @@ function draw_graph() {
         node
             .attr("cx", d=>d.x)
             .attr("cy", d=>d.y);
-        /*
-            .attr("cx", d =>{
-                return d.x=Math.max(0.05* width, Math.min(0.55 * width, d.x))
-            })
-            .attr("cy", d =>{
-                return d.y=Math.max(0.4* height, Math.min(0.9* height, d.y))
-            });
-        */
         link
             .attr("x1", d => d.source.x)
             .attr("y1", d => d.source.y)
@@ -506,41 +334,7 @@ function draw_graph() {
                   .attr("transform", "translate(" + (ggg+5) + "," + (ggg+5) + ")");
     show_ins();
 }
-function redraw(){
-    d3.selectAll('svg > *').remove();
-    draw_graph();
-}
 
-function slidechangerep(){
-    force_direct_flag=0;
-    v = document.getElementById('repr').value;
-    lambda1 = raw_l1 * v;
-    document.getElementById("bartext1").innerText="repulsive coefficient: " + v;
-
-    d3.selectAll('svg > *').remove();
-    draw_graph();
-}
-
-function slidechangeatt(){
-    force_direct_flag=0;
-    v = document.getElementById('attr').value;
-    lambda2 = raw_l2 * v;
-    document.getElementById("bartext2").innerText="attractive coefficient: " + v;
-
-    d3.selectAll('svg > *').remove();
-    draw_graph();
-}
-
-function slidechangeite(){
-    force_direct_flag=0;
-    v = document.getElementById('iter').value;
-    iters = v;
-    console.log(document.getElementById("bartext3").innerText)
-    document.getElementById("bartext3").innerText="iterations: " + v;
-
-    d3.selectAll('svg > *').remove();
-    draw_graph();
-}
 
 function changey() {
     force_direct_flag=1;
@@ -548,7 +342,7 @@ function changey() {
     data1 = backup1.filter((d, i) => (d[x_attr] != '' && d[y_attr] != '' && d[rad_attr] != ''));
     y_attr = document.getElementById('y_ax').value;
     draw_graph();
-    show_ins();
+    //show_ins();
 }
 
 let fontFamily;
@@ -662,29 +456,12 @@ function show_ins(){
             }
         })
 
-            // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-            //var radius = Math.min(width, height) / 2 - margin
-
-// The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-            //svg2.selectAll('mySlices').remove();
-
-            // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-
-            // append the svg object to the div called 'my_dataviz'
-
-
-            // append the svg object to the div called 'my_dataviz'
-
-            // Create dummy data
             if(fff) svg2.selectAll('*').remove();
             fff=1;
 
             var radius = ggg
             var data = intes_map[ins];
             console.log(data);
-
-            // set the color scale
-            var color = d3.scaleOrdinal(d3.schemeCategory10);
 
             // Compute the position of each group on the pie:
             var pie = d3.pie()
@@ -732,9 +509,6 @@ function show_ins(){
             var radius = ggg
             var data = intes_map[ins2];
             console.log(data);
-
-            // set the color scale
-            var color = d3.scaleOrdinal(d3.schemeCategory10);
 
             // Compute the position of each group on the pie:
             var pie = d3.pie()
