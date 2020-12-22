@@ -55,7 +55,7 @@ html,body {
 #Insnms{
     position: absolute;
     font-size: 0.6rem;
-    right: 170px;
+    right: 300px;
     top: 100px;
     width:  15rem;
 }
@@ -63,7 +63,7 @@ html,body {
 #Insnms2{
     position: absolute;
     font-size: 0.6rem;
-    right: 170px;
+    right: 300px;
     top: 120px;
     width:  15rem;
 }
@@ -71,15 +71,15 @@ html,body {
 #y_ax{
     position: absolute;
     font-size: 0.6rem;
-    right: 170px;
-    top: 170px;
+    right: 220px;
+    top: 220px;
     width:  15rem;
 }
 
 #Select1{
     position: absolute;
     font-size: 1rem;
-    right: 150px;
+    right: 280px;
     top: 70px;
     width:  15rem;
 }
@@ -87,8 +87,8 @@ html,body {
 #Select2{
     position: absolute;
     font-size: 1rem;
-    right: 150px;
-    top: 140px;
+    right: 160px;
+    top: 190px;
     width:  15rem;
 }
 
@@ -96,14 +96,14 @@ html,body {
 #Red{
     position: absolute;
     font-size: 0.8rem;
-    right: 400px;
+    right: 530px;
     top: 100px;
 }
 
 #Cyan{
     position: absolute;
     font-size: 0.8rem;
-    right: 400px;
+    right: 530px;
     top: 120px;
 }
 

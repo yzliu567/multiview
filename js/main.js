@@ -242,7 +242,7 @@ function draw_graph() {
             //return compute(lnr(d[col_attr]));
         })
 
-        .on('click', (e, d) => {
+        .on('mouseover', (e, d) => {
 
             //console.log('e', e, 'd', d)
 
@@ -268,8 +268,16 @@ function draw_graph() {
             // tooltip
             let tooltip = d3.select('#tooltip');
             tooltip.html(content)
+                .style('left', (x(parseInt(d[x_attr])) + 5) + 'px')
+                .style('top', (y(parseInt(d[y_attr])) + 5)+ 'px')
                 //.transition().duration(500)
                 .style('visibility', 'visible');
+        })
+        .on('mouseout', (e, d) => {
+
+            // remove tooltip
+            let tooltip = d3.select('#tooltip');
+            tooltip.style('visibility', 'hidden');
         })
     // 数据格式
     // nodes = [{"id": 学校名称, "weight": 毕业学生数量}, ...]
@@ -283,25 +291,25 @@ function draw_graph() {
         .force("link", d3.forceLink(links).id(d => d.id))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width * 0.3, height * 0.5));
-    
+
         function drag(simulation) {
             function dragstarted(event) {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
                 event.subject.fx = event.subject.x;
                 event.subject.fy = event.subject.y;
             }
-    
+
             function dragged(event) {
                 event.subject.fx = event.x;
                 event.subject.fy = event.y;
             }
-    
+
             function dragended(event) {
                 if (!event.active) simulation.alphaTarget(0);
                 event.subject.fx = null;
                 event.subject.fy = null;
             }
-    
+
             return d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -477,7 +485,7 @@ function draw_graph() {
             .attr("y1", d => d.source.y)
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
-        
+
         text
             .attr("x", d=>d.x)
             .attr("y", d=>d.y);
@@ -575,7 +583,7 @@ function show_ins(){
         d3.selectAll('.scatterpoint').style("visibility", "visible").style('fill',colscatter1);
         d3.selectAll('.forcepoint').style("visibility", "visible").style('fill',d=>d.rawcolor);
         d3.selectAll('.linkline').style('visibility', 'visible');
-        
+
         text
             .attr("display", function (f) {
                 if (f.weight > 40) {
@@ -585,7 +593,7 @@ function show_ins(){
                     return 'none';
                 }
             })
-        
+
     }
     else{
         clicking = true;
