@@ -49,8 +49,8 @@ function normalize(nodes) {
         min_y=Math.min(min_y,nodes[i].y);
     }
     for(let i=0;i<n;++i) {
-        nodes[i].x = (nodes[i].x-min_x)/(max_x-min_x)*0.7*width+0.05*width;
-        nodes[i].y = (nodes[i].y-min_y)/(max_y-min_y)*0.8*height+0.1*height;
+        nodes[i].x = (nodes[i].x-min_x)/(max_x-min_x)*0.5*width+0.05*width;
+        nodes[i].y = (nodes[i].y-min_y)/(max_y-min_y)*0.5*height+0.4*height;
     }
 }
 
@@ -170,7 +170,7 @@ function draw_graph() {
         .select('svg')
         .attr('width', width)
         .attr('height', height);
-    
+
     let padding = {'left': 0.15*width, 'bottom': 0.1*height, 'top': 0.2*height, 'right': 0.25*width};
     // title
     svg.append('g')
@@ -178,11 +178,11 @@ function draw_graph() {
         .append('text')
         .attr('class', 'title')
         .text('A Visualization for Faculties That Research on Computer Science in Well-known Universities');
-    
-    
+
+
     let x = d3.scaleLinear()
         .domain(get_min_max(data1, x_attr))
-        .range([padding.left, width-padding.right]);    
+        .range([0.65*width, 0.98*width]);
     let axis_x = d3.axisBottom()
         .scale(x)
         .ticks(10)
@@ -191,7 +191,7 @@ function draw_graph() {
     // y axis - publications
     let y = d3.scaleLinear()
         .domain(get_min_max(data1, y_attr))
-        .range([height-padding.bottom, padding.top]);    
+        .range([height-padding.bottom, 0.4*height]);
     let axis_y = d3.axisLeft()
         .scale(y)
         .ticks(10)
@@ -205,7 +205,7 @@ function draw_graph() {
         .attr('font-size', '0.8rem')
 
     svg.append('g')
-        .attr('transform', `translate(${padding.left+(width-padding.left-padding.right)/2}, ${height-padding.bottom})`)
+        .attr('transform', `translate(${0.825*width}, ${height-padding.bottom})`)
         .append('text')
         .attr('class', 'axis_label')
         .attr('dx', '-0.4rem')
@@ -213,15 +213,15 @@ function draw_graph() {
         .text(x_attr);
 
     // y axis
-    svg.append('g')        
-        .attr('transform', `translate(${padding.left}, ${0})`)
+    svg.append('g')
+        .attr('transform', `translate(${0.65*width}, ${0})`)
         .call(axis_y)
         .attr('font-family', fontFamily)
         .attr('font-size', '0.6rem')
     svg.append('g')
         .attr('transform', `
-            translate(${padding.left}, ${height/2})
-            rotate(-90)    
+            translate(${0.65*width}, ${0.6*height})
+            rotate(-90)
         `)
         .append('text')
         .attr('class', 'axis_label')
@@ -229,7 +229,7 @@ function draw_graph() {
         .text(y_attr);
 
     // points
-    var radi = d3.scaleLinear().domain(get_min_max(data1, rad_attr)).range([1.5,10]);
+    var radi = d3.scaleLinear().domain(get_min_max(data1, rad_attr)).range([0.75,5]);
 
     svg.append('g')
         .selectAll('.scatterpoint')
@@ -237,17 +237,17 @@ function draw_graph() {
         .enter().append('circle')
         .attr('class', 'scatterpoint')
         .attr('cx', (d, i) => {
-            //console.log('data', d); 
+            //console.log('data', d);
             return x(parseInt(d[x_attr]));
         })
         .attr('cy', (d, i) => y(parseInt(d[y_attr])))
         .attr('r', d=> radi(d[rad_attr]))
-        
+
         .style('fill', (d) =>{
             return colscatter1;
             //return compute(lnr(d[col_attr]));
         })
-        
+
         .on('click', (e, d) => {
 
             //console.log('e', e, 'd', d)
@@ -263,16 +263,16 @@ function draw_graph() {
             //console.log('data', d);
 
 
-            let content = '<table><tr><td>Name</td><td>' + name + '</td></tr>' 
+            let content = '<table><tr><td>Name</td><td>' + name + '</td></tr>'
                 + '<tr><td>Institution</td><td>'+ institution + '</td></tr>'
                 + '<tr><td>Research Interest</td><td>'+ interest + '</td></tr>'
                 + '<tr><td>Ph.D. Graduation Year</td><td>'+ grad_year + '</td></tr>'
                 + '<tr><td>Ph.D. Graduation School</td><td>'+ grad_school + '</td></tr>'
                 + '<tr><td>Publications</td><td>'+ pubs + '</td></tr>'
                 + '<tr><td>Citations</td><td>'+ cits + '</td></tr></table>';
-            
+
             // tooltip
-            let tooltip = d3.select('#tooltip');            
+            let tooltip = d3.select('#tooltip');
             tooltip.html(content)
                 //.transition().duration(500)
                 .style('visibility', 'visible');
@@ -328,7 +328,7 @@ function draw_graph() {
         .data(nodes)
         .join("circle")
         .attr("class", "forcepoint")
-        .attr("r", d => Math.sqrt(d.weight) * 2 + 0.5)
+        .attr("r", d => Math.sqrt(d.weight)*1.3 + 0.5)
         .attr("fill", d=>d.rawcolor)
         .on("mouseover", function (e, d) {// 鼠标移动到node上时显示text
             if(!clicking){
