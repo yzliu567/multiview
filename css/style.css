@@ -95,14 +95,14 @@ html,body {
 
 #Red{
     position: absolute;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     right: 400px;
     top: 100px;
 }
 
 #Cyan{
     position: absolute;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     right: 400px;
     top: 120px;
 }
