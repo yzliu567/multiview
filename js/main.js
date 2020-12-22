@@ -160,6 +160,7 @@ let clicking = false;
 let choosing = false;
 let ins,ins2;
 let svg,svg2,svg3;
+let ggg = 75;
 function draw_graph() {
     svg = d3.select('#container')
         .select('svg')
@@ -172,7 +173,7 @@ function draw_graph() {
         .attr('transform', `translate(${padding.left+(width-padding.left-padding.right)/2*1.2}, ${padding.top*0.4})`)
         .append('text')
         .attr('class', 'title')
-        .text('A Visualization for Faculties That Research on Computer Science in Well-known Universities');
+        .text('Multiple-view Interactive Visualization of Computer Science Faculties in Well-known Schools');
 
 
     let x = d3.scaleLinear()
@@ -186,7 +187,7 @@ function draw_graph() {
     // y axis - publications
     let y = d3.scaleLinear()
         .domain(get_min_max(data1, y_attr))
-        .range([height-padding.bottom, 0.4*height]);
+        .range([height-padding.bottom, 0.5*height]);
     let axis_y = d3.axisLeft()
         .scale(y)
         .ticks(10)
@@ -215,7 +216,7 @@ function draw_graph() {
         .attr('font-size', '0.6rem')
     svg.append('g')
         .attr('transform', `
-            translate(${0.65*width}, ${0.6*height})
+            translate(${0.65*width}, ${0.7*height})
             rotate(-90)
         `)
         .append('text')
@@ -493,16 +494,16 @@ function draw_graph() {
     });
     svg2 = d3.select("#my_dataviz")
               .append("svg")
-                .attr("width", 210)
-                .attr("height", 210)
+                .attr("width", ggg*2+10)
+                .attr("height", ggg*2+10)
               .append("g")
-                .attr("transform", "translate(" + 105 + "," + 105 + ")");
+                .attr("transform", "translate(" + (ggg+5) + "," + (ggg+5) + ")");
     svg3 = d3.select("#my_dataviz2")
                 .append("svg")
-                  .attr("width", 210)
-                  .attr("height", 210)
+                  .attr("width", ggg*2+10)
+                  .attr("height", ggg*2+10)
                 .append("g")
-                  .attr("transform", "translate(" + 105 + "," + 105 + ")");
+                  .attr("transform", "translate(" + (ggg+5) + "," + (ggg+5) + ")");
     show_ins();
 }
 function redraw(){
@@ -619,7 +620,7 @@ function show_ins(){
                     return 'none';
                 }
             })
-        
+
 
     }
     else{
@@ -668,36 +669,36 @@ function show_ins(){
             //svg2.selectAll('mySlices').remove();
 
             // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-            
+
             // append the svg object to the div called 'my_dataviz'
 
-            
+
             // append the svg object to the div called 'my_dataviz'
-            
+
             // Create dummy data
             if(fff) svg2.selectAll('*').remove();
             fff=1;
-            
-            var radius = 100
+
+            var radius = ggg
             var data = intes_map[ins];
             console.log(data);
-            
+
             // set the color scale
             var color = d3.scaleOrdinal(d3.schemeCategory10);
-            
+
             // Compute the position of each group on the pie:
             var pie = d3.pie()
               .value(function(d) {return d[1];})
             var data_ready = pie(Object.entries(data))
 
             // Now I know that group A goes from 0 degrees to x degrees and so on.
-            
+
             // shape helper to build arcs:
             var arcGenerator = d3.arc()
               .innerRadius(0)
               .outerRadius(radius)
 
-            
+
             // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
             svg2
               .selectAll('mySlices')
@@ -709,7 +710,7 @@ function show_ins(){
                 .attr("stroke", "black")
                 .style("stroke-width", "2px")
                 .style("opacity", 0.7)
-            
+
             // Now add the annotation. Use the centroid method to get the best coordinates
             svg2
               .selectAll('mySlices')
@@ -719,35 +720,35 @@ function show_ins(){
               .text(function(d){ return d.data[0]})
               .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
               .style("text-anchor", "middle")
-              .style("font-size", 10)
+              .style("font-size", 8)
 
-            
-            
 
-            
+
+
+
             if(fff2) svg3.selectAll('*').remove();
             if(ins2== 'None')return;
             fff2=1;
-            var radius = 100
+            var radius = ggg
             var data = intes_map[ins2];
             console.log(data);
-            
+
             // set the color scale
             var color = d3.scaleOrdinal(d3.schemeCategory10);
-            
+
             // Compute the position of each group on the pie:
             var pie = d3.pie()
               .value(function(d) {return d[1];})
             var data_ready = pie(Object.entries(data))
 
             // Now I know that group A goes from 0 degrees to x degrees and so on.
-            
+
             // shape helper to build arcs:
             var arcGenerator = d3.arc()
               .innerRadius(0)
               .outerRadius(radius)
 
-            
+
             // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
             svg3
               .selectAll('mySlices')
@@ -759,7 +760,7 @@ function show_ins(){
                 .attr("stroke", "black")
                 .style("stroke-width", "2px")
                 .style("opacity", 0.7)
-            
+
             // Now add the annotation. Use the centroid method to get the best coordinates
             svg3
               .selectAll('mySlices')
@@ -769,8 +770,8 @@ function show_ins(){
               .text(function(d){ return d.data[0]})
               .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
               .style("text-anchor", "middle")
-              .style("font-size", 10)
-              
+              .style("font-size", 8)
+
     }
 }
 

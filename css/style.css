@@ -55,31 +55,31 @@ html,body {
 #Insnms{
     position: absolute;
     font-size: 0.6rem;
-    right: 300px;
+    right: 370px;
     top: 100px;
-    width:  15rem;
+    width:  10rem;
 }
 
 #Insnms2{
     position: absolute;
     font-size: 0.6rem;
-    right: 300px;
-    top: 120px;
-    width:  15rem;
+    right: 170px;
+    top: 100px;
+    width:  10rem;
 }
 
 #y_ax{
     position: absolute;
     font-size: 0.6rem;
     right: 220px;
-    top: 220px;
+    top: 290px;
     width:  15rem;
 }
 
 #Select1{
     position: absolute;
     font-size: 1rem;
-    right: 280px;
+    right: 160px;
     top: 70px;
     width:  15rem;
 }
@@ -88,7 +88,7 @@ html,body {
     position: absolute;
     font-size: 1rem;
     right: 160px;
-    top: 190px;
+    top: 260px;
     width:  15rem;
 }
 
@@ -103,8 +103,8 @@ html,body {
 #Cyan{
     position: absolute;
     font-size: 0.8rem;
-    right: 530px;
-    top: 120px;
+    right: 330px;
+    top: 100px;
 }
 
 #tooltip{
@@ -126,13 +126,13 @@ html,body {
 
 #my_dataviz{
     position: absolute;
-    right: 400px;
-    top: 200px;
+    right: 365px;
+    top: 115px;
 }
 #my_dataviz2{
     position: absolute;
-    right: 400px;
-    top: 450px;
+    right: 165px;
+    top: 115px;
 }
 .domain {
     stroke: rgb(80,80,80);
