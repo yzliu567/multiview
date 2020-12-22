@@ -153,18 +153,10 @@ function getc(w){
     else if(w>5) return colforce2;
     else return colforce3;
 }
-var drag = d3.drag()
-        .on('drag', function (e, d) {
-            d3.select(this).attr("cx", d.x = e.x ).attr("cy", d.y = e.y );
-            d3.selectAll('.linkline')
-                .attr("x1", d => nodes_dict[d.source].x)
-                .attr("y1", d => nodes_dict[d.source].y)
-                .attr("x2", d => nodes_dict[d.target].x)
-                .attr("y2", d => nodes_dict[d.target].y);
-            d3.selectAll('.forcenodetext')
-                .attr("x", d => d.x)
-                .attr("y", d => d.y)
-        });
+
+let haslinks = []
+let text;
+let clicking = false;
 function draw_graph() {
     let svg = d3.select('#container')
         .select('svg')
@@ -286,21 +278,35 @@ function draw_graph() {
     //len(nodes)=256 len(links)=846
     //console.log(links.length, nodes.length)
     // 图布局算法
-    if(force_direct_flag==0) graph_layout_algorithm(nodes, links);
-
-    let haslinks = []
-    for(let i in nodes){
-        haslinks[i]=[];
-        for(let j in nodes)
-            haslinks[i][j]=0;
-    }
-    for(let i in links){
-        haslinks[links[i].from][links[i].to] = 1;
-        haslinks[links[i].to][links[i].from] = 1;
-    }
-    for (i in nodes) {
-        nodes_dict[nodes[i].id] = nodes[i]
-    }
+    let simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id))
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width * 0.3, height * 0.5));
+    
+        function drag(simulation) {
+            function dragstarted(event) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
+            }
+    
+            function dragged(event) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
+    
+            function dragended(event) {
+                if (!event.active) simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
+    
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+    //if(force_direct_flag==0) graph_layout_algorithm(nodes, links);
 
     for(i in nodes){
         nodes[i].rawcolor=getc(nodes[i].weight);
@@ -308,7 +314,29 @@ function draw_graph() {
         nodes[i].fcolor=compute(0.2);
     }
 
-    let clicking = false;
+    let n=nodes.length;
+    let m=links.length;
+    name2id={};
+    for(let i=0;i<n;i++){
+        name2id[nodes[i].id] = i;
+    }
+    for(let i=0;i<m;i++){
+        links[i].from = name2id[links[i].source.id]
+        links[i].to = name2id[links[i].target.id]
+    }
+    for(let i in nodes){
+        haslinks[i]=[];
+        for(let j in nodes)
+            haslinks[i][j]=0;
+    }
+    for(let i in links){
+        //console.log(links[i].from, links[i].to)
+        haslinks[links[i].from][links[i].to] = 1;
+        haslinks[links[i].to][links[i].from] = 1;
+    }
+    for (i in nodes) {
+        nodes_dict[nodes[i].id] = nodes[i]
+    }
 
     // links
     let link = svg.append("g")
@@ -363,7 +391,8 @@ function draw_graph() {
                 else return d2.fcolor;
             });
             d3.selectAll(".linkline").style("visibility", (d2)=>{
-                if(d2.source == d.id || d2.target == d.id) return "visible";
+                //console.log(d2.source.id, d.id)
+                if(d2.source.id == d.id || d2.target.id == d.id) return "visible";
                 else return "hidden";
             });
             text
@@ -386,10 +415,10 @@ function draw_graph() {
                     }
                 })
         })
-        .call(drag);
+        .call(drag(simulation));
 
     // 学校名称text，只显示满足条件的学校
-    let text = svg.append("g")
+    text = svg.append("g")
         .selectAll(".forcenodetext")
         .data(nodes)
         .join("text")
@@ -405,19 +434,31 @@ function draw_graph() {
         });
 
     // 绘制links, nodes和text的位置
-    link
-        .attr("x1", d => nodes_dict[d.source].x)
-        .attr("y1", d => nodes_dict[d.source].y)
-        .attr("x2", d => nodes_dict[d.target].x)
-        .attr("y2", d => nodes_dict[d.target].y);
+    // title
 
-    node
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-    text
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-
+    // 绘制links和nodes
+    simulation.on("tick", () => {
+        node
+            .attr("cx", d=>d.x)
+            .attr("cy", d=>d.y);
+        /*
+            .attr("cx", d =>{
+                return d.x=Math.max(0.05* width, Math.min(0.55 * width, d.x))
+            })
+            .attr("cy", d =>{
+                return d.y=Math.max(0.4* height, Math.min(0.9* height, d.y))
+            });
+        */
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+        
+        text
+            .attr("x", d=>d.x)
+            .attr("y", d=>d.y);
+    });
 }
 function redraw(){
     d3.selectAll('svg > *').remove();
@@ -497,6 +538,8 @@ let Insnames = [
 
 var colscatter1 = d3.rgb(254,67,101);
 var colscatter2 = d3.rgb(131,175,155);
+var colscatter3 = d3.rgb(200,200,169);
+var colscatter4 = d3.rgb(249,205,173);
 
 function show_ins(){
     let ins = document.getElementById("Insnms").value;
@@ -504,13 +547,57 @@ function show_ins(){
     let ins2 = document.getElementById("Insnms2").value;
     if(ins == 'All'){
         d3.selectAll('.scatterpoint').style("visibility", "visible").style('fill',colscatter1);
+        d3.selectAll('.forcepoint').style("visibility", "visible").style('fill',d=>d.rawcolor);
+        d3.selectAll('.linkline').style('visibility', 'visible');
+        /*
+        text
+            .attr("display", function (f) {
+                if (f.weight > 40) {
+                    return 'null';
+                }
+                else {
+                    return 'none';
+                }
+            })
+        */
     }
     else{
+        clicking = true;
         d3.selectAll('.scatterpoint').style("visibility", (d)=>{
             return d["Institution"] == ins || d["Institution"] == ins2 ? "visible" : "hidden";
         }).style('fill', (d)=>{
             return d["Institution"] == ins ? colscatter1 : colscatter2;
         });
+
+        d3.selectAll('.forcepoint').style("visibility", (d)=>{
+            return d.id == ins || d.id==ins2 || (haslinks[name2id[d.id]][name2id[ins]]||haslinks[name2id[d.id]][name2id[ins2]]) ? "visible":"hidden";
+        }).style('fill', (d)=>{
+            if(d.id == ins) return colscatter1;
+            else if (d.id==ins2) return colscatter2;
+            else if (haslinks[name2id[d.id]][name2id[ins]]&&(ins2!='None'&&haslinks[name2id[d.id]][name2id[ins2]])) return colscatter3;
+            else return colscatter4;
+        });
+        text
+                .attr("display", function (f) {
+                    if (f.id ==ins || f.id == ins2) {
+                        return 'null';
+                    }
+                    else {
+                        return 'none';
+                    }
+                })
+
+        d3.selectAll('.linkline').style("visibility", (d)=>{
+            //console.log(d.source.id, d.target.id);
+            if(ins2 == 'None'){
+                if (d.source.id==ins || d.target.id ==ins) return "visible";
+                else return "hidden";
+            }
+            else{
+                if(d.source.id == ins || d.target.id == ins2||d.source.id == ins2 || d.target.id == ins) return "visible";
+                else return "hidden";
+            }
+        })
     }
 }
 
