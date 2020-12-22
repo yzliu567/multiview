@@ -1,0 +1,230 @@
+@font-face {
+    font-family: 'Khand-Regular';
+    src: url('./font/Khand-Regular.ttf');
+}
+@font-face {
+    font-family: 'KAITI';
+    src: url(./font/KAITI.ttf);
+}
+@font-face {
+    font-family: 'PingFangSC-Regular';
+    src: url(./font/PingFang-SC-Regular.ttf);
+}
+
+@media only screen and (min-width: 1080px) {
+    html {
+        font-size: 15px !important;
+    }
+}
+@media only screen and (min-width: 1440px) {
+    html {
+        font-size: 25px !important;
+    }
+}
+
+
+
+
+html,body {
+    width: 100%;
+    height: 100%;
+    font-size: 12px;
+    overflow: hidden;
+}
+
+#container {
+    width: 100%; 
+    height: 100%;  
+    background-color: rgba(240, 240, 240, 0.9);
+    overflow: hidden;
+}
+
+#legend1 {
+    position: absolute;
+    left: 1250px;
+    top: 50px;
+    width:  15px;
+    height: 15px;
+    background-color: rgb(247, 68, 97);
+}
+
+#legend2 {
+    position: absolute;
+    left: 1250px;
+    top: 80px;
+    width:  15px;
+    height: 15px;
+    background-color: rgb(173,195,192);
+}
+
+#legend3 {
+    position: absolute;
+    left: 1250px;
+    top: 110px;
+    width:  15px;
+    height: 15px;
+    background-color: rgb(87,96,105);
+}
+
+#text1 {
+    position: absolute;
+    left: 1270px;
+    top: 48px;
+    width:  150px;
+    height: 15px;
+}
+
+#text2 {
+    position: absolute;
+    left: 1270px;
+    top: 78px;
+    width:  150px;
+    height: 15px;
+}
+
+#text3 {
+    position: absolute;
+    left: 1270px;
+    top: 108px;
+    width:  150px;
+    height: 15px;
+}
+
+#repr {
+    position: absolute;
+    left: 1250px;
+    top: 200px;
+}
+
+#attr {
+    position: absolute;
+    left: 1250px;
+    top: 250px;
+}
+
+#iter {
+    position: absolute;
+    left: 1250px;
+    top: 300px;
+}
+
+#bartext1{
+    position: absolute;
+    left: 1250px;
+    top: 180px;
+}
+
+#bartext2{
+    position: absolute;
+    left: 1250px;
+    top: 230px;
+}
+
+#bartext3{
+    position: absolute;
+    left: 1250px;
+    top: 280px;
+}
+
+#readme{
+    position: absolute;
+    font-size: 15px;
+    left: 1250px;
+    top: 350px;
+}
+
+.title {
+    font-size: 1.3rem;
+    text-anchor: middle;
+}
+
+.axis_label {
+    font-size: 0.8rem;
+    text-anchor: middle;
+}
+
+.point {
+    fill: #1f77b4;
+}
+#Insnms{
+    position: absolute;
+    font-size: 0.6rem;
+    right: 10px;
+    top: 120px;
+    width:  15rem;
+}
+
+#Insnms2{
+    position: absolute;
+    font-size: 0.6rem;
+    right: 10px;
+    top: 150px;
+    width:  15rem;
+}
+
+#y_ax{
+    position: absolute;
+    font-size: 0.6rem;
+    right: 10px;
+    top: 240px;
+    width:  15rem;
+}
+
+#Select1{
+    position: absolute;
+    font-size: 1rem;
+    right: 10px;
+    top: 80px;
+    width:  15rem;
+}
+
+#Select2{
+    position: absolute;
+    font-size: 1rem;
+    right: 10px;
+    top: 200px;
+    width:  15rem;
+}
+
+
+#Red{
+    position: absolute;
+    font-size: 0.6rem;
+    right: 16rem;
+    top: 123px;
+}
+
+#Cyan{
+    position: absolute;
+    font-size: 0.6rem;
+    right: 16rem;
+    top: 153px;
+}
+
+#tooltip{
+    position: absolute;           
+    text-align: center;
+    background-color: rgba(250, 250, 250, 1);
+    border: 1px solid rgb(200,200,200);
+    border-radius:5px;
+    font-size:0.8rem;
+    width: 15rem;;
+    padding:4px;
+    color:black;
+    z-index: 3;
+    visibility: hidden;
+    opacity: 0.8;
+    right: 10px;
+    top: 290px;
+}
+
+.domain {
+    stroke: rgb(80,80,80);
+    stroke-linecap: round;
+    stroke-width: 0.13rem;
+}
+
+.tick line {
+    stroke: rgb(80,80,80);
+    stroke-linecap: round;
+}

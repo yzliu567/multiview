@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title> Assignment3 </title>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/d3.v6.min.js"></script>
+	<script src="js/FileSaver.js"></script>
+	<script src="js/d3-scale-chromatic.v1.min.js"></script>
+
+	<link rel="stylesheet" href="css/w3.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+	<div id='container'>
+		<div id="legend1"> </div>
+		<div id="legend2"> </div>
+		<div id="legend3"> </div>
+		<div id="text1"> weight > 40 </div>
+		<div id="text2"> 5 < weight <= 40 </div>
+		<div id="text3"> weight <= 5 </div>
+		<input type="range" id="repr" min="0.5" max="2" value="1" step="0.05" onchange='slidechangerep()'> </input>
+		<input type="range" id="attr" min="0.5" max="2" value="1" step="0.05" onchange='slidechangeatt()'> </input>
+		<input type="range" id="iter" min="300" max="800" value="500" step="1" onchange='slidechangeite()'> </input>
+		<div id="bartext1"> repulsive coefficient: 1 </div>
+		<div id="bartext2"> attractive coefficient: 1 </div>
+		<div id="bartext3">  iterations: 500 </div>
+		<div id="readme">
+			<br> Click a node to highlight its relevant information, double-click to recover</br>
+			<br> Drag a node to change its position </br>
+			<br> Adjust the algorithm parameters with the scroll bars </br>
+		</div>
+
+		<text id="Select1"> Select Institution </text>
+		<text id="Select2"> Select y_axis </text>
+		<text id="Red"> Red </text>
+		<text id="Cyan"> Cyan </text>
+
+		<select id="Insnms" onchange="show_ins()"> </select>
+		<select id="Insnms2" onchange="show_ins()"> </select>
+		<select id="y_ax" onchange="changey()">
+			<option value="Publications"> Publications </option>
+			<option value="Citations"> Citations </option>
+			<option value="Publications Divided by Co-authors"> Publications Divided by Co-authors </option>
+		</select>
+
+		<div id='tooltip'></div>
+		<svg></svg>
+	</div>
+	
+<script src="js/main.js"></script>
+<script src="js/data.js"></script>
+</body>
