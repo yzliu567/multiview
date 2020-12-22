@@ -157,6 +157,8 @@ function getc(w){
 let haslinks = []
 let text;
 let clicking = false;
+let choosing = false;
+let ins,ins2;
 function draw_graph() {
     let svg = d3.select('#container')
         .select('svg')
@@ -269,7 +271,6 @@ function draw_graph() {
                 //.transition().duration(500)
                 .style('visibility', 'visible');
         })
-    show_ins();
     // 数据格式
     // nodes = [{"id": 学校名称, "weight": 毕业学生数量}, ...]
     // links = [{"source": 毕业学校, "target": 任职学校, "weight": 人数}, ...]
@@ -359,7 +360,7 @@ function draw_graph() {
         .attr("r", d => Math.sqrt(d.weight)*1.3 + 0.5)
         .attr("fill", d=>d.rawcolor)
         .on("mouseover", function (e, d) {// 鼠标移动到node上时显示text
-            if(!clicking){
+            if(!choosing){
             text
                 .attr("display", function (f) {
                     if (f.id == d.id || f.weight > 40) {
@@ -370,9 +371,19 @@ function draw_graph() {
                     }
                 })
             }
+            else{
+                text.attr("display", function(f){
+                    if(f.id == d.id || f.id == ins || f.id ==ins2){
+                        return "null";
+                    }
+                    else{
+                        return "none";
+                    }
+                });
+            }
         })
         .on("mouseout", function (e, d) {// 鼠标移出node后按条件判断是否显示text
-            if(!clicking){
+            if(!choosing){
             text
                 .attr("display", function (f) {
                     if (f.weight > 40) {
@@ -383,7 +394,18 @@ function draw_graph() {
                     }
                 })
             }
+            else{
+                text.attr("display", function(f){
+                    if(f.id == ins || f.id ==ins2){
+                        return "null";
+                    }
+                    else{
+                        return "none";
+                    }
+                });
+            }
         })
+        /*
         .on("click", function (e, d){
             clicking = true;
             d3.selectAll(".forcepoint").attr("fill", (d2) =>{
@@ -403,7 +425,7 @@ function draw_graph() {
         })
         .on("dblclick", function(e,d){
             clicking = false;
-            d3.selectAll(".forcepoint").attr("fill", d=>d.rawcolor);
+            d3.selectAll(".forcepoint").style("visibility","visible").style("fill", d=>d.rawcolor);
             d3.selectAll(".linkline").style("visibility", "visible");
             text
                 .attr("display", function (f) {
@@ -415,6 +437,7 @@ function draw_graph() {
                     }
                 })
         })
+        */
         .call(drag(simulation));
 
     // 学校名称text，只显示满足条件的学校
@@ -459,6 +482,7 @@ function draw_graph() {
             .attr("x", d=>d.x)
             .attr("y", d=>d.y);
     });
+    show_ins();
 }
 function redraw(){
     d3.selectAll('svg > *').remove();
@@ -542,14 +566,16 @@ var colscatter3 = d3.rgb(200,200,169);
 var colscatter4 = d3.rgb(249,205,173);
 
 function show_ins(){
-    let ins = document.getElementById("Insnms").value;
+    ins = document.getElementById("Insnms").value;
 
-    let ins2 = document.getElementById("Insnms2").value;
+    ins2 = document.getElementById("Insnms2").value;
     if(ins == 'All'){
+        clicking = false;
+        choosing = false;
         d3.selectAll('.scatterpoint').style("visibility", "visible").style('fill',colscatter1);
         d3.selectAll('.forcepoint').style("visibility", "visible").style('fill',d=>d.rawcolor);
         d3.selectAll('.linkline').style('visibility', 'visible');
-        /*
+        
         text
             .attr("display", function (f) {
                 if (f.weight > 40) {
@@ -559,10 +585,11 @@ function show_ins(){
                     return 'none';
                 }
             })
-        */
+        
     }
     else{
         clicking = true;
+        choosing = true;
         d3.selectAll('.scatterpoint').style("visibility", (d)=>{
             return d["Institution"] == ins || d["Institution"] == ins2 ? "visible" : "hidden";
         }).style('fill', (d)=>{
